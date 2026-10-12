@@ -1,14 +1,23 @@
+<!-- mcp-name: io.github.1019666077-bit/webcam -->
+
 <div align="center">
 
 # Webcam MCP 📸
 
 **MCP server for webcam access - capture photos and video for LLM agents**
 
-[![PyPI](https://img.shields.io/pypi/v/webcam-mcp)](https://pypi.org/project/webcam-mcp/)
-[![CI](https://github.com/pavel-kirienko/webcam_mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/pavel-kirienko/webcam_mcp/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/botbridge-webcam-mcp)](https://pypi.org/project/botbridge-webcam-mcp/)
+[![CI](https://github.com/1019666077-bit/webcam_mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/1019666077-bit/webcam_mcp/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 </div>
+
+> **Fork notice.** This is `botbridge-webcam-mcp`, a fork of
+> [pavel-kirienko/webcam_mcp](https://github.com/pavel-kirienko/webcam_mcp) (MIT),
+> maintained by [1019666077-bit](https://github.com/1019666077-bit). It adds an
+> MCP Apps panel (`webcam_panel`). Install this distribution as
+> `botbridge-webcam-mcp`; the upstream distribution on PyPI is named
+> `webcam-mcp`. The Python import package is `webcam_mcp`.
 
 ---
 
@@ -31,7 +40,7 @@ Features:
 Install:
 
 ```bash
-pip install webcam-mcp
+pip install botbridge-webcam-mcp
 ```
 
 Start the MCP server:
