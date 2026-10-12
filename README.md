@@ -19,6 +19,7 @@ Webcam MCP is a Model Context Protocol (MCP) server that gives LLM agents direct
 Features:
 
 - **📸 High-Resolution Photos**: Capture still images
+- **🎛️ MCP Apps panel (`webcam_panel`)**: Free in-chat buttons (拍一张 / 再拍 / 关掉); Pro placeholders only
 - **🎥 Video Recording**: Record a sequence of frames over a specified duration
 - **🌐 Remote Access**: SSE transport for network-accessible deployment
 - **⚙️ Configurable**: Adjust resolution, camera index, and quality settings

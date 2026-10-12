@@ -39,6 +39,12 @@ webcam-mcp = "webcam_mcp.cli:main"
 [tool.hatch.build.targets.wheel]
 packages = ["src/webcam_mcp"]
 
+[tool.hatch.build]
+include = [
+  "src/webcam_mcp/**/*.py",
+  "src/webcam_mcp/**/*.html",
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"

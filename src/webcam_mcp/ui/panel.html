@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Webcam Bridge</title>
+  <style>
+    :root {
+      --bg: var(--color-background-primary, transparent);
+      --fg: var(--color-text-primary, #e8e4dc);
+      --muted: var(--color-text-secondary, #9a958c);
+      --line: var(--color-border-primary, rgba(255,255,255,0.12));
+      --btn: var(--color-background-secondary, #2a2824);
+      --btn-fg: var(--color-text-primary, #f3efe6);
+      --accent: #c4a35a;
+      --danger: #b5685a;
+      --pro: #6b6570;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 12px 14px 14px;
+      background: var(--bg);
+      color: var(--fg);
+      min-height: 220px;
+    }
+    h1 {
+      margin: 0 0 4px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .sub {
+      margin: 0 0 12px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    button {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: var(--btn);
+      color: var(--btn-fg);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: opacity 0.15s, border-color 0.15s;
+    }
+    button:hover:not(:disabled) { border-color: var(--accent); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    button.primary { border-color: var(--accent); }
+    button.close { border-color: color-mix(in srgb, var(--danger) 55%, var(--line)); }
+    button.pro {
+      color: var(--pro);
+      border-style: dashed;
+    }
+    .status {
+      min-height: 18px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .status.err { color: var(--danger); }
+    .preview-wrap {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(0,0,0,0.2);
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .preview-wrap img {
+      display: block;
+      max-width: 100%;
+      max-height: 280px;
+      width: auto;
+      height: auto;
+    }
+    .placeholder {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 24px 12px;
+      text-align: center;
+    }
+    .pro-note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--pro);
+      line-height: 1.35;
+    }
+  </style>
+</head>
+<body>
+  <h1>Webcam Bridge · Free</h1>
+  <p class="sub">先点按钮再拍。JPEG 会进当前对话；拍完即释放摄像头。无托盘、无常驻进程。</p>
+  <div class="row" id="free-row">
+    <button type="button" class="primary" id="btn-snap">拍一张</button>
+    <button type="button" id="btn-again" disabled>再拍</button>
+    <button type="button" class="close" id="btn-close">关掉</button>
+  </div>
+  <div class="row" id="pro-row" aria-label="Pro placeholders">
+    <button type="button" class="pro" disabled title="Pro 占位，本版未实现">连拍 · Pro</button>
+    <button type="button" class="pro" disabled title="Pro 占位，本版未实现">录像 · Pro</button>
+    <button type="button" class="pro" disabled title="Pro 占位，本版未实现">倒计时 · Pro</button>
+  </div>
+  <div class="status" id="status">就绪 · 摄像头关闭</div>
+  <div class="preview-wrap" id="preview">
+    <div class="placeholder" id="ph">尚未拍照</div>
+  </div>
+  <p class="pro-note">Pro（接口/文案占位）：连拍、录像、倒计时 — 本版未实现。详见 https://mymoying.com/webcam</p>
+
+  <script type="module">
+    import { App } from "https://unpkg.com/@modelcontextprotocol/ext-apps@0.4.0/app-with-deps";
+
+    const statusEl = document.getElementById("status");
+    const preview = document.getElementById("preview");
+    const btnSnap = document.getElementById("btn-snap");
+    const btnAgain = document.getElementById("btn-again");
+    const btnClose = document.getElementById("btn-close");
+
+    const app = new App({ name: "Webcam Bridge", version: "0.2.0" });
+    let busy = false;
+
+    function setStatus(text, isErr = false) {
+      statusEl.textContent = text;
+      statusEl.classList.toggle("err", isErr);
+    }
+
+    function setBusy(v) {
+      busy = v;
+      btnSnap.disabled = v;
+      btnAgain.disabled = v || !btnAgain.dataset.ready;
+      btnClose.disabled = v;
+    }
+
+    function showImage(mimeType, data) {
+      const img = document.createElement("img");
+      img.src = `data:${mimeType || "image/jpeg"};base64,${data}`;
+      img.alt = "Webcam capture";
+      preview.replaceChildren(img);
+      btnAgain.dataset.ready = "1";
+      btnAgain.disabled = busy;
+    }
+
+    async function snap(fromAgain) {
+      if (busy) return;
+      setBusy(true);
+      setStatus(fromAgain ? "再拍中…" : "拍摄中…");
+      try {
+        const result = await app.callServerTool({
+          name: "take_photo",
+          arguments: {},
+        });
+        if (result?.isError) {
+          const errText = result.content?.find((c) => c.type === "text")?.text;
+          throw new Error(errText || "take_photo failed");
+        }
+        const img = result?.content?.find((c) => c.type === "image");
+        if (!img?.data) {
+          throw new Error("未返回 JPEG");
+        }
+        showImage(img.mimeType, img.data);
+        setStatus("已拍一张 · JPEG 已进对话 · 摄像头已释放");
+        try {
+          await app.updateModelContext({
+            content: [
+              {
+                type: "text",
+                text:
+                  "Webcam Bridge Free: user clicked capture. take_photo returned a JPEG in this chat; " +
+                  "the camera was released. Describe the visible image. Do not call take_photo again unless they ask.",
+              },
+            ],
+          });
+        } catch (_) {
+          /* host may omit model-context */
+        }
+      } catch (e) {
+        setStatus(`失败：${e?.message || e}`, true);
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    btnSnap.addEventListener("click", () => snap(false));
+    btnAgain.addEventListener("click", () => snap(true));
+    btnClose.addEventListener("click", async () => {
+      setStatus("正在关掉…");
+      try {
+        await app.requestTeardown();
+      } catch (e) {
+        setStatus(`关掉失败：${e?.message || e}`, true);
+      }
+    });
+
+    app.onteardown = async () => ({});
+    app.ontoolresult = ({ content }) => {
+      const img = content?.find((c) => c.type === "image");
+      if (img?.data) {
+        showImage(img.mimeType, img.data);
+        setStatus("已收到画面 · 摄像头已释放");
+      }
+    };
+
+    await app.connect();
+    setStatus("就绪 · 点「拍一张」");
+  </script>
+</body>
+</html>
