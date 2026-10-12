@@ -1,0 +1,16 @@
+# Files excluded from the MCPB bundle built by `mcpb pack . dist/botbridge-webcam.mcpb`.
+# Runtime needs manifest.json, pyproject.toml and src/ -- everything else is repo-only.
+
+.git/
+.github/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+tests/
+dist/
+demo.png
+glama.json
+server.json

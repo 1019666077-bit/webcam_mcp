@@ -1,0 +1,46 @@
+{
+  "manifest_version": "0.4",
+  "name": "botbridge-webcam",
+  "display_name": "Bot Bridge Webcam",
+  "version": "0.2.0",
+  "description": "Give LLM agents webcam access: capture photos and record short videos over MCP.",
+  "long_description": "Bot Bridge Webcam is an MCP server that gives a locally running LLM agent access to a USB or built-in webcam. It exposes an in-chat control panel plus tools to take a single JPEG photo or record a short video clip, releasing the camera when it is done so other applications can use it. Runs over stdio, so it works in desktop MCP clients without a separate network port.",
+  "author": {
+    "name": "Bot Bridge",
+    "url": "https://github.com/1019666077-bit"
+  },
+  "homepage": "https://github.com/1019666077-bit/webcam_mcp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/1019666077-bit/webcam_mcp"
+  },
+  "license": "MIT",
+  "keywords": ["mcp", "webcam", "camera", "photo", "video", "llm", "agent"],
+  "server": {
+    "type": "uv",
+    "entry_point": "src/webcam_mcp/stdio_main.py",
+    "mcp_config": {
+      "command": "uv",
+      "args": ["run", "--directory", "${__dirname}", "src/webcam_mcp/stdio_main.py"],
+      "env": {
+        "WEBCAM_CAMERA_INDEX": "${user_config.camera_index}"
+      }
+    }
+  },
+  "user_config": {
+    "camera_index": {
+      "type": "string",
+      "title": "Camera index",
+      "description": "Which webcam to open. 0 is usually the built-in camera; try 1 for a second USB camera.",
+      "required": false,
+      "default": "0"
+    }
+  },
+  "compatibility": {
+    "platforms": ["darwin", "linux", "win32"],
+    "runtimes": {
+      "python": ">=3.10"
+    }
+  },
+  "tools_generated": true
+}

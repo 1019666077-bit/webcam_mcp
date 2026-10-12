@@ -12,29 +12,12 @@
   },
   "packages": [
     {
-      "registryType": "pypi",
-      "identifier": "botbridge-webcam-mcp",
+      "registryType": "mcpb",
+      "identifier": "https://github.com/1019666077-bit/webcam_mcp/releases/download/v0.2.0/botbridge-webcam.mcpb",
       "version": "0.2.0",
-      "runtimeHint": "uvx",
-      "runtimeArguments": [
-        {
-          "type": "positional",
-          "valueHint": "package",
-          "value": "botbridge-webcam-mcp",
-          "description": "PyPI distribution to launch with uvx"
-        }
-      ],
-      "packageArguments": [
-        {
-          "type": "named",
-          "name": "--port",
-          "default": "8000",
-          "description": "HTTP port for the SSE endpoint"
-        }
-      ],
+      "fileSha256": "1f43968eedac3e15a191174de8ea9e815186a11b881e5fbb8a510782c34f5d91",
       "transport": {
-        "type": "sse",
-        "url": "http://localhost:8000/sse"
+        "type": "stdio"
       }
     }
   ]
