@@ -35,7 +35,7 @@ def create_server(config: ServerConfig) -> FastMCP:
     Example:
         >>> from webcam_mcp.config import ServerConfig
         >>> from webcam_mcp.server import create_server
-        >>> config = ServerConfig(host='0.0.0.0', port=8000)
+        >>> config = ServerConfig(host='127.0.0.1', port=8000)
         >>> server = create_server(config)
         >>> server.run(transport='sse')
     """

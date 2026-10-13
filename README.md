@@ -30,7 +30,7 @@ Features:
 - **📸 High-Resolution Photos**: Capture still images
 - **🎛️ MCP Apps panel (`webcam_panel`)**: Free in-chat buttons (拍一张 / 再拍 / 关掉); Pro placeholders only
 - **🎥 Video Recording**: Record a sequence of frames over a specified duration
-- **🌐 Remote Access**: SSE transport for network-accessible deployment
+- **🌐 SSE transport**: loopback by default; LAN exposure is opt-in and unauthenticated
 - **⚙️ Configurable**: Adjust resolution, camera index, and quality settings
 - **🔌 Cross-Platform**: Works on Linux, macOS, and Windows
 - **🚀 Easy Integration**: Simple MCP client configuration
@@ -49,7 +49,7 @@ Start the MCP server:
 webcam-mcp
 ```
 
-The server will start on `http://0.0.0.0:8000/sse` by default.
+The server starts on `http://127.0.0.1:8000/sse` by default (loopback only).
 
 You can test the server using any MCP client, e.g., MCP Inspector (install via `npx @modelcontextprotocol/inspector`).
 
@@ -57,7 +57,7 @@ You can test the server using any MCP client, e.g., MCP Inspector (install via `
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `--host` | string | `0.0.0.0` | Server host address |
+| `--host` | string | `127.0.0.1` | Server host address |
 | `--port` | integer | `8000` | Server port |
 | `--camera-index` | integer | `0` | Webcam device index |
 | `--photo-width` | integer | `1920` | Default photo width in pixels |
@@ -77,7 +77,23 @@ webcam-mcp --camera-index 1
 
 # Custom photo resolution
 webcam-mcp --photo-width 1280 --photo-height 720
+
+# Opt-in LAN exposure (unauthenticated! see Security below)
+WEBCAM_MCP_ALLOW_LAN=1 webcam-mcp --host 0.0.0.0
 ```
+
+## Security
+
+The SSE transport has **no authentication**. Anyone who can reach the SSE
+endpoint can trigger your webcam to take photos and record video.
+
+- **Prefer stdio** (desktop MCP clients use it automatically) or **loopback**
+  (`127.0.0.1`, the default).
+- Binding `--host` to a non-loopback address (e.g. `0.0.0.0` or a LAN IP)
+  prints a loud warning at startup and is **refused** unless you set
+  `WEBCAM_MCP_ALLOW_LAN=1`.
+- Only expose the server on your LAN or a public interface if you understand
+  the risk and have your own authentication in front of it.
 
 ## MCP Client Configuration
 
