@@ -11,5 +11,5 @@ class ServerConfig:
     video_width: int = 640
     video_height: int = 480
     jpeg_quality: int = 90
-    host: str = "0.0.0.0"
+    host: str = "127.0.0.1"
     port: int = 8000
