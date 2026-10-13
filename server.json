@@ -3,7 +3,7 @@
   "name": "io.github.1019666077-bit/webcam",
   "title": "Webcam MCP",
   "description": "Give LLM agents webcam access: capture photos and record short videos over MCP.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "websiteUrl": "https://github.com/1019666077-bit/webcam_mcp",
   "repository": {
     "source": "github",
@@ -13,9 +13,9 @@
   "packages": [
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/1019666077-bit/webcam_mcp/releases/download/v0.2.0/botbridge-webcam.mcpb",
-      "version": "0.2.0",
-      "fileSha256": "1f43968eedac3e15a191174de8ea9e815186a11b881e5fbb8a510782c34f5d91",
+      "identifier": "https://github.com/1019666077-bit/webcam_mcp/releases/download/v0.2.1/botbridge-webcam.mcpb",
+      "version": "0.2.1",
+      "fileSha256": "dee24877446bf85eaefae13dab173b58ec1a2c3971ea05694fbaf257b1739b76",
       "transport": {
         "type": "stdio"
       }
